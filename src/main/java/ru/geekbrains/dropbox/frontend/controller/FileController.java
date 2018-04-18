@@ -17,7 +17,7 @@ public class FileController {
     FilesService service;
 
     @RequestMapping(
-            value = "/files/m1/{file_name}",
+            value = "/files/**/{file_name}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody

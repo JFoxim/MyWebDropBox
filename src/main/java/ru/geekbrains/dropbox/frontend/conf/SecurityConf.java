@@ -19,24 +19,26 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConf extends WebSecurityConfigurerAdapter {
 
-
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().passwordEncoder(passwordEncoder())
-            .withUser("user1").password("user1").roles("USER")
-            .and()
-            .withUser("user2").password("user2").roles("USER");
+        auth
+                .inMemoryAuthentication().passwordEncoder(passwordEncoder())
+                .withUser("user1").password("user1").roles("USER")
+                .and()
+                .withUser("user2").password("user2").roles("USER");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.authorizeRequests()
-                .antMatchers("/vaadinServlet/", "/VAADIN/", "/PUSH/", "/UIDL/", "/login", "/login/", "/register", "/environment").permitAll()
-                .antMatchers("/").fullyAuthenticated()
+                .antMatchers("/vaadinServlet/**", "/VAADIN/**", "/PUSH/**",
+                        "/UIDL/**", "/login", "/login/**", "/register",
+                        "/environment").permitAll()
+                .antMatchers("/**").fullyAuthenticated()
                 .and()
                 .csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login/"))
+                .exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
     }
@@ -55,7 +57,5 @@ public class SecurityConf extends WebSecurityConfigurerAdapter {
             }
         };
     }
-
-
 
 }

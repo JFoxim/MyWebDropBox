@@ -6,7 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class FilesDAOImpl implements FilesDAO {
@@ -35,10 +37,12 @@ public class FilesDAOImpl implements FilesDAO {
         List<File> fileList = new ArrayList<>();
         try {
             File folder = new File(getUserDirectory());
-            for (File fileEntry: folder.listFiles()) {
-                if (fileEntry.isFile())
-                    fileList.add(fileEntry);
-            }
+            return Arrays.stream(
+                        folder
+                            .listFiles()
+                    )
+                    .filter(x -> !x.isDirectory())
+                    .collect(Collectors.toList());
         }catch (Exception e) {
             e.printStackTrace();
         }

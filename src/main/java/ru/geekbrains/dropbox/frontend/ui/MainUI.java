@@ -1,39 +1,36 @@
 package ru.geekbrains.dropbox.frontend.ui;
 
-import com.vaadin.annotations.Theme;
+
+import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.PushStateNavigation;
 import com.vaadin.server.*;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.*;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.components.grid.ItemClickListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.geekbrains.dropbox.frontend.service.FilesService;
 import ru.geekbrains.dropbox.frontend.ui.view.LoginView;
-import ru.geekbrains.dropbox.frontend.ui.view.MainView;
 
 
-import java.io.*;
+import javax.servlet.annotation.WebServlet;
 
 @SpringUI
 @PushStateNavigation
 public class MainUI extends UI {
 
-    Navigator navigator;
-
     @Autowired
-    SpringViewProvider springViewProvider;
+    private SpringViewProvider viewProvider;
+    private Navigator navigator;
 
     @Override
     public void init(VaadinRequest request) {
-
         navigator = new Navigator(this, this);
-
-        navigator.addView("",  MainView.class);
-        navigator.addView("login", LoginView.class);
+        navigator.addProvider(viewProvider);
+        setNavigator(navigator);
     }
 
+    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
+    @VaadinServletConfiguration(ui = MainUI.class, productionMode = false)
+    public static class MainUIServlet extends VaadinServlet {
+    }
 }

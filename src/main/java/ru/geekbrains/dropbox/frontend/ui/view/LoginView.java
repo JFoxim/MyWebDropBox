@@ -2,60 +2,32 @@ package ru.geekbrains.dropbox.frontend.ui.view;
 
 import com.vaadin.navigator.View;
 import com.vaadin.spring.annotation.SpringView;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import ru.geekbrains.dropbox.frontend.service.MyAuthenticationManager;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.*;
+import ru.geekbrains.dropbox.frontend.service.FilesService;
 
 
-@Component
-@UIScope
-@SpringView(name = "LoginView")
+@SpringView(name = "login")
 public class LoginView extends VerticalLayout implements View {
 
-    private Panel pnlAutheticate;
+    @Autowired
+    private FilesService filesService;
 
     public LoginView() {
-
-        HorizontalLayout authLayout = new HorizontalLayout();
-        TextField loginTextField = new TextField();
-        loginTextField.setPlaceholder("Login");
-        PasswordField passwordField = new PasswordField();
-        passwordField.setPlaceholder("Password");
-        Button btnLogin = new Button("Войти");
-
-        btnLogin.addClickListener(clickEvent -> {
-
-
-                try {
-                    AuthenticationManager am = new MyAuthenticationManager();
-                    Authentication request = new UsernamePasswordAuthenticationToken(loginTextField.getValue(),
-                            passwordField.getValue());
-                    Authentication result = am.authenticate(request);
-                    SecurityContextHolder.getContext().setAuthentication(result);
-                    loginTextField.setVisible(false);
-                    passwordField.setVisible(false);
-                    btnLogin.setVisible(false);
-                    Notification.show("Вы вошли как " + loginTextField.getValue());
-                    pnlAutheticate.setCaption("Вы вошли как " + loginTextField.getValue());
-                    getUI().getNavigator().navigateTo("");
-                } catch(AuthenticationException e) {
-                    pnlAutheticate.setCaption("Неверный логин или пароль");
-                }
+        TextField txtUser = new TextField();
+        txtUser.setPlaceholder("Пользователь");
+        PasswordField txtPassword = new PasswordField();
+        txtPassword.setPlaceholder("Пароль");
+        Button btnLogin = new Button("Вход", clickEvent -> {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                    txtUser.getValue(),
+                    txtPassword.getValue()
+            );
+            SecurityContextHolder.getContext().setAuthentication(token);
+            getUI().getNavigator().navigateTo("");
         });
-        authLayout.addComponents(loginTextField, passwordField, btnLogin);
-
-        pnlAutheticate = new Panel("Введите логин и пароль");
-        pnlAutheticate.setContent(authLayout);
-        pnlAutheticate.setSizeUndefined();
-
-        addComponent(pnlAutheticate);
-
-
+        addComponents(txtUser, txtPassword, btnLogin);
     }
 }
