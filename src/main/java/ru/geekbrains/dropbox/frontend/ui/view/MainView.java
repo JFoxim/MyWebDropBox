@@ -53,14 +53,14 @@ public class MainView extends VerticalLayout implements View {
 
                 // Создаем компонент который будет скачивать
                 fileDownloader = new FileDownloader(
-                        createResource(
-                                itemClick.getItem().getName()
+                        createResource(itemClick.getItem().getName()
                         )
                 );
                 fileDownloader.extend(btnDownload);
             }
         });
 
+        //Удаление файла
         btnDelete.addClickListener(new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent clickEvent) {
